@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IqraX Companion</string>
+    <string name="accessibility_service_label">IqraX Companion Auto-Touch Service</string>
+    <string name="accessibility_service_description">Autonomous AI Companion engine that enables on-device navigation, clicks, typing, and task execution via voice commands.</string>
+</resources>
