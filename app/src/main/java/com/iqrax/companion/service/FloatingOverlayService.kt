@@ -22,6 +22,7 @@ import android.widget.TextView
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.iqrax.companion.R
+import com.iqrax.companion.agent.GeminiAgentBrain
 import com.iqrax.companion.operator.HumanPhoneOperator
 import com.iqrax.companion.ui.VoiceCommandActivity
 import kotlinx.coroutines.CoroutineScope
