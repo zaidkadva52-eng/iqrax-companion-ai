@@ -5,4 +5,11 @@
         <item name="android:navigationBarColor">@color/vampire_black</item>
         <item name="android:windowBackground">@color/vampire_black</item>
     </style>
+
+    <style name="Theme.IqraXCompanion.TransparentDialog" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">#B309080E</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/vampire_black</item>
+    </style>
 </resources>
