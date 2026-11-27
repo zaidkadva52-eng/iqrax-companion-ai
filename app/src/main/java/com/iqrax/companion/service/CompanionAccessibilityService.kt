@@ -222,6 +222,58 @@ class CompanionAccessibilityService : AccessibilityService() {
     }
 
     /**
+     * Finds and clicks an element by text OR content description
+     */
+    fun findAndClick(query: String, onComplete: ((Boolean) -> Unit)? = null): Boolean {
+        val rootNode = rootInActiveWindow ?: return false
+        val target = findNodeMatching(rootNode, query)
+        if (target != null) {
+            val bounds = Rect()
+            target.getBoundsInScreen(bounds)
+            performClick(bounds.exactCenterX(), bounds.exactCenterY(), onComplete)
+            return true
+        }
+        onComplete?.invoke(false)
+        return false
+    }
+
+    private fun findNodeMatching(node: AccessibilityNodeInfo?, query: String): AccessibilityNodeInfo? {
+        if (node == null || !node.isVisibleToUser) return null
+        val q = query.lowercase()
+        val text = node.text?.toString()?.lowercase() ?: ""
+        val desc = node.contentDescription?.toString()?.lowercase() ?: ""
+        if ((text.contains(q) || desc.contains(q)) && (node.isClickable || node.parent?.isClickable == true)) {
+            return if (node.isClickable) node else node.parent
+        }
+        for (i in 0 until node.childCount) {
+            val found = findNodeMatching(node.getChild(i), query)
+            if (found != null) return found
+        }
+        return null
+    }
+
+    /**
+     * Extracts all visible text from current screen (like ALINA OCR screen reader)
+     */
+    fun getAllVisibleText(): String {
+        val rootNode = rootInActiveWindow ?: return ""
+        val textList = mutableListOf<String>()
+        collectText(rootNode, textList)
+        return textList.distinct().joinToString("\n")
+    }
+
+    private fun collectText(node: AccessibilityNodeInfo?, list: MutableList<String>) {
+        if (node == null || !node.isVisibleToUser) return
+        val t = node.text?.toString()?.trim()
+        val d = node.contentDescription?.toString()?.trim()
+        if (!t.isNullOrBlank()) list.add(t)
+        if (!d.isNullOrBlank() && d != t) list.add(d)
+        for (i in 0 until node.childCount) {
+            collectText(node.getChild(i), list)
+        }
+    }
+
+    /**
      * Launch an application by its package name
      */
     fun launchApp(packageName: String): Boolean {

@@ -1,30 +1,45 @@
 package com.iqrax.companion.ui
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import com.iqrax.companion.agent.GeminiAgentBrain
+import androidx.core.content.ContextCompat
 import com.iqrax.companion.databinding.ActivityMainBinding
+import com.iqrax.companion.operator.HumanPhoneOperator
 import com.iqrax.companion.service.CompanionAccessibilityService
 import com.iqrax.companion.service.FloatingOverlayService
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val prefs by lazy { getSharedPreferences("iqrax_companion_prefs", Context.MODE_PRIVATE) }
 
+    private val audioPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        updateStatus()
+        if (granted) {
+            Toast.makeText(this, "Microphone permission granted!", Toast.LENGTH_SHORT).show()
+            appendLog("Microphone permission granted.")
+        } else {
+            Toast.makeText(this, "Microphone permission denied", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        HumanPhoneOperator.init(this)
         setupListeners()
         updateStatus()
     }
@@ -40,6 +55,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             startActivity(intent)
             Toast.makeText(this, "Enable 'IqraX Companion' in the list", Toast.LENGTH_LONG).show()
+            appendLog("Opened Accessibility Settings.")
         }
 
         // 2. Overlay Permission Button
@@ -50,12 +66,22 @@ class MainActivity : AppCompatActivity() {
                     Uri.parse("package:$packageName")
                 )
                 startActivity(intent)
+                appendLog("Opened Overlay Permission Settings.")
             } else {
                 Toast.makeText(this, "Overlay permission already granted!", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // 3. Save API Key
+        // 3. Audio Permission Button
+        binding.btnAudioPermission.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                audioPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            } else {
+                Toast.makeText(this, "Microphone permission already granted!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // 4. Save API Key
         val savedKey = prefs.getString("gemini_api_key", "") ?: ""
         if (savedKey.isNotBlank()) {
             binding.etApiKey.setText(savedKey)
@@ -66,11 +92,11 @@ class MainActivity : AppCompatActivity() {
             if (key.isNotEmpty()) {
                 prefs.edit().putString("gemini_api_key", key).apply()
                 Toast.makeText(this, "Gemini API Key Saved!", Toast.LENGTH_SHORT).show()
-                appendLog("API Key updated and stored securely.")
+                appendLog("Gemini API Key saved securely.")
             }
         }
 
-        // 4. Toggle Floating Companion Orb
+        // 5. Toggle Floating Companion Orb
         binding.btnToggleOverlay.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
                 Toast.makeText(this, "Please grant Overlay permission first", Toast.LENGTH_SHORT).show()
@@ -83,56 +109,78 @@ class MainActivity : AppCompatActivity() {
             } else {
                 startService(intent)
             }
-            appendLog("Floating Companion Orb launched on screen!")
-            Toast.makeText(this, "IqraX Companion Orb Started!", Toast.LENGTH_SHORT).show()
+            appendLog("IqraX Floating Orb launched on screen!")
+            Toast.makeText(this, "Floating Companion Orb Started!", Toast.LENGTH_SHORT).show()
         }
 
-        // 5. Test Command
+        // 6. Mic Trigger Button
+        binding.btnMainMic.setOnClickListener {
+            val intent = Intent(this, VoiceCommandActivity::class.java)
+            startActivity(intent)
+        }
+
+        // 7. Quick Chips
+        binding.chipMainWhatsApp.setOnClickListener {
+            executeTask("WhatsApp me Zaid ko message bhejo Salam")
+        }
+        binding.chipMainInsta.setOnClickListener {
+            executeTask("Instagram open karo")
+        }
+        binding.chipMainScreen.setOnClickListener {
+            executeTask("Screen par kya likha hai padho")
+        }
+        binding.chipMainYouTube.setOnClickListener {
+            executeTask("YouTube open karo")
+        }
+        binding.chipMainHome.setOnClickListener {
+            executeTask("Home screen")
+        }
+
+        // 8. Execute Manual Command
         binding.btnExecuteCommand.setOnClickListener {
             val command = binding.etTestCommand.text.toString().trim()
-            val apiKey = prefs.getString("gemini_api_key", "") ?: ""
-
-            if (apiKey.isBlank()) {
-                Toast.makeText(this, "Please enter and save your Gemini API key first", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
             if (command.isBlank()) {
                 Toast.makeText(this, "Enter a task first", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-            if (!CompanionAccessibilityService.isRunning()) {
-                Toast.makeText(this, "Please enable Accessibility Service first!", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-
-            appendLog("Starting autonomous action: \"$command\"…")
-            val brain = GeminiAgentBrain(apiKey)
-
-            lifecycleScope.launch {
-                brain.executeGoal(
-                    userGoal = command,
-                    onStatusUpdate = { status ->
-                        runOnUiThread { appendLog("Agent: $status") }
-                    },
-                    onSpeechResponse = { response, tone ->
-                        runOnUiThread { appendLog("AI Voice ($tone): \"$response\"") }
-                    }
-                )
-            }
+            executeTask(command)
         }
     }
 
-    private fun updateStatus() {
-        val isA11y = CompanionAccessibilityService.isRunning()
-        val isOverlay = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this)
-
-        binding.btnAccessibility.text = if (isA11y) "Accessibility: ACTIVE (Ready)" else "Enable Accessibility Service"
-        binding.btnOverlayPermission.text = if (isOverlay) "Overlay: GRANTED (Ready)" else "Grant Overlay Permission"
+    private fun executeTask(command: String) {
+        appendLog("Action: \"$command\"")
+        HumanPhoneOperator.execute(
+            context = applicationContext,
+            commandText = command,
+            onStatus = { status ->
+                runOnUiThread { appendLog("Status: $status") }
+            },
+            onFinish = { success ->
+                runOnUiThread {
+                    appendLog(if (success) "Task completed." else "Task ended.")
+                }
+            }
+        )
     }
 
-    private fun appendLog(line: String) {
+    private fun updateStatus() {
+        // Accessibility
+        val isAccRunning = CompanionAccessibilityService.isRunning()
+        binding.btnAccessibility.text = if (isAccRunning) "Active ✓" else "Enable"
+
+        // Overlay
+        val hasOverlay = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) Settings.canDrawOverlays(this) else true
+        binding.btnOverlayPermission.text = if (hasOverlay) "Active ✓" else "Allow"
+
+        // Audio
+        val hasAudio = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        binding.btnAudioPermission.text = if (hasAudio) "Active ✓" else "Grant"
+    }
+
+    private fun appendLog(msg: String) {
         val current = binding.tvLogs.text.toString()
-        binding.tvLogs.text = "$current\n> $line"
+        val timestamp = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
+        val updated = "[$timestamp] $msg\n$current"
+        binding.tvLogs.text = if (updated.length > 1500) updated.take(1500) else updated
     }
 }

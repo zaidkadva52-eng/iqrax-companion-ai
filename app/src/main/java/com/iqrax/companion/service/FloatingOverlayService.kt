@@ -20,7 +20,10 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.NotificationCompat
-import com.iqrax.companion.agent.GeminiAgentBrain
+import androidx.core.content.ContextCompat
+import com.iqrax.companion.R
+import com.iqrax.companion.operator.HumanPhoneOperator
+import com.iqrax.companion.ui.VoiceCommandActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -91,27 +94,20 @@ class FloatingOverlayService : Service(), TextToSpeech.OnInitListener {
             y = 300
         }
 
-        // Programmatic Glowing Orb Floating Container
+        // IqraX Official Brand Circular Floating Orb
         val frame = FrameLayout(this).apply {
-            setPadding(16, 16, 16, 16)
+            setPadding(12, 12, 12, 12)
         }
 
         val orb = ImageView(this).apply {
-            layoutParams = FrameLayout.LayoutParams(140, 140)
-            setBackgroundColor(Color.parseColor("#FE6807"))
-            // Circular clipping handled in runtime
-        }
-
-        val statusText = TextView(this).apply {
-            text = "AI"
-            setTextColor(Color.parseColor("#09080E"))
-            textSize = 14f
-            gravity = Gravity.CENTER
-            layoutParams = FrameLayout.LayoutParams(140, 140)
+            layoutParams = FrameLayout.LayoutParams(150, 150)
+            background = ContextCompat.getDrawable(this@FloatingOverlayService, R.drawable.bg_orb_glowing)
+            setImageResource(R.drawable.ic_launcher)
+            setPadding(10, 10, 10, 10)
+            scaleType = ImageView.ScaleType.FIT_CENTER
         }
 
         frame.addView(orb)
-        frame.addView(statusText)
 
         frame.setOnTouchListener { _, event ->
             val p = params ?: return@setOnTouchListener false
@@ -132,7 +128,7 @@ class FloatingOverlayService : Service(), TextToSpeech.OnInitListener {
                 MotionEvent.ACTION_UP -> {
                     val diffX = Math.abs(event.rawX - initialTouchX)
                     val diffY = Math.abs(event.rawY - initialTouchY)
-                    if (diffX < 10 && diffY < 10) {
+                    if (diffX < 12 && diffY < 12) {
                         onOrbTapped()
                     }
                     true
@@ -146,29 +142,18 @@ class FloatingOverlayService : Service(), TextToSpeech.OnInitListener {
     }
 
     private fun onOrbTapped() {
-        speak("Aapka hukum? Main sun rahi hoon.")
-        // Here, we launch speech recognizer or prompt dialog
+        try {
+            val intent = Intent(this, VoiceCommandActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            speak("Voice assistant khol rahi hoon")
+        }
     }
 
     fun executeUserCommand(command: String) {
-        val brain = agentBrain
-        if (brain == null) {
-            speak("Kripya pehle settings me jakar apni Gemini API key set karein.")
-            return
-        }
-
-        serviceScope.launch {
-            speak("Bilkul, main abhi karti hoon.")
-            brain.executeGoal(
-                userGoal = command,
-                onStatusUpdate = { status ->
-                    // Update overlay status text
-                },
-                onSpeechResponse = { responseText, _ ->
-                    speak(responseText)
-                }
-            )
-        }
+        HumanPhoneOperator.execute(this, command)
     }
 
     private fun speak(text: String) {

@@ -11,147 +11,282 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- Title & Subtitle -->
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Top Header with IqraX Brand Logo -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="IqraX Companion AI"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Autonomous Phone Controller &amp; Emotional AI"
-            android:textColor="@color/slate_400"
-            android:textSize="12sp" />
+            <ImageView
+                android:id="@+id/ivMainLogo"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:background="@drawable/bg_logo_circle"
+                android:padding="4dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_launcher" />
 
-        <!-- Card: Permissions Setup -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="IqraX Companion AI"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Autonomous Phone Operator &amp; Voice Assistant"
+                    android:textColor="@color/blaze_orange"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Permissions Status Card -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@color/card_dark"
+            android:background="@drawable/bg_card_premium"
             android:orientation="vertical"
             android:padding="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1. SYSTEM PERMISSIONS"
+                android:text="SYSTEM PERMISSIONS"
                 android:textColor="@color/blaze_orange"
                 android:textSize="11sp"
                 android:textStyle="bold" />
 
-            <!-- Accessibility Service Button -->
-            <Button
-                android:id="@+id/btnAccessibility"
+            <!-- Accessibility Row -->
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="@color/card_border"
-                android:text="Enable Accessibility Service"
-                android:textColor="@color/white"
-                android:textSize="12sp" />
-
-            <!-- Overlay Permission Button -->
-            <Button
-                android:id="@+id/btnOverlayPermission"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="@color/card_border"
-                android:text="Grant Overlay (Display on top)"
-                android:textColor="@color/white"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <!-- Card: Gemini API Configuration -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@color/card_dark"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2. GEMINI 2.0 BRAIN KEY"
-                android:textColor="@color/blaze_orange"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                android:layout_marginTop="12dp">
 
-            <EditText
-                android:id="@+id/etApiKey"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="1. Auto-Touch &amp; Clicks"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnAccessibility"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_button_secondary"
+                    android:paddingHorizontal="12dp"
+                    android:text="Enable"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <!-- Overlay Row -->
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/vampire_black"
-                android:hint="Paste Gemini API Key (AIzaSy...)"
-                android:inputType="textPassword"
-                android:paddingHorizontal="12dp"
-                android:textColor="@color/white"
-                android:textColorHint="@color/slate_400"
-                android:textSize="13sp" />
-
-            <Button
-                android:id="@+id/btnSaveApiKey"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="@color/blaze_orange"
-                android:text="Save API Key"
-                android:textColor="@color/vampire_black"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Card: Floating Companion Controller -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@color/card_dark"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3. FLOATING ORB CONTROL"
-                android:textColor="@color/blaze_orange"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="2. Floating Companion Orb"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnOverlayPermission"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_button_secondary"
+                    android:paddingHorizontal="12dp"
+                    android:text="Allow"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <!-- Audio Row -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="3. Microphone Voice Input"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnAudioPermission"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_button_secondary"
+                    android:paddingHorizontal="12dp"
+                    android:text="Grant"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/btnToggleOverlay"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="@color/emerald_500"
+                android:layout_height="46dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_gradient"
                 android:text="Start Floating Companion Orb"
+                android:textAllCaps="false"
                 android:textColor="@color/vampire_black"
+                android:textSize="14sp"
                 android:textStyle="bold" />
+        </LinearLayout>
 
-            <!-- Direct Test Command Box -->
+        <!-- Voice & Autonomous Action Controller Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_card_premium"
+            android:orientation="vertical"
+            android:padding="16dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Test Command (e.g. 'Open YouTube', 'Check battery')"
-                android:textColor="@color/slate_400"
-                android:textSize="11sp" />
+                android:text="AUTONOMOUS PHONE CONTROLLER"
+                android:textColor="@color/blaze_orange"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <!-- Mic Trigger Button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/btnMainMic"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bg_mic_button"
+                    android:padding="16dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_mic" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Tap to Speak (Voice Command)"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Quick Chips -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/chipMainWhatsApp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:text="💬 WhatsApp Zaid"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/chipMainInsta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_chip"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:text="📸 Instagram DM"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/chipMainScreen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_chip"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:text="📜 Read Screen"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/chipMainYouTube"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_chip"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:text="▶️ YouTube"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/chipMainHome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_chip"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:text="🏠 Home"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </HorizontalScrollView>
 
             <EditText
                 android:id="@+id/etTestCommand"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="6dp"
-                android:background="@color/vampire_black"
-                android:hint="Type task for AI to perform on phone..."
+                android:layout_height="46dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_input_box"
+                android:hint="Type task (e.g. 'WhatsApp me Zaid ko message karo')"
                 android:paddingHorizontal="12dp"
                 android:textColor="@color/white"
                 android:textColorHint="@color/slate_400"
@@ -162,21 +297,65 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:layout_marginTop="8dp"
-                android:backgroundTint="@color/card_border"
-                android:text="Execute Action On Phone"
-                android:textColor="@color/white" />
+                android:background="@drawable/bg_button_secondary"
+                android:text="Run Autonomous Task"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="13sp" />
         </LinearLayout>
 
-        <!-- Log Output Box -->
+        <!-- Gemini 2.0 API Key Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_card_premium"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GEMINI 2.0 FLASH BRAIN KEY"
+                android:textColor="@color/blaze_orange"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etApiKey"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_input_box"
+                android:hint="Paste Gemini API Key (AIzaSy...)"
+                android:inputType="textPassword"
+                android:paddingHorizontal="12dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/slate_400"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/btnSaveApiKey"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_button_secondary"
+                android:text="Save API Key"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Live Execution Console Logs -->
         <TextView
             android:id="@+id/tvLogs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@color/card_dark"
+            android:background="@drawable/bg_card_premium"
             android:fontFamily="monospace"
-            android:padding="12dp"
-            android:text="System Status: Ready. Ensure Accessibility &amp; Overlay permissions are active."
+            android:padding="14dp"
+            android:text="[Ready] IqraX Companion AI loaded. Ensure Accessibility &amp; Overlay permissions are active."
             android:textColor="@color/linen_cream"
             android:textSize="11sp" />
 
