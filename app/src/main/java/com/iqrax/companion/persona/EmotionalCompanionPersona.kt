@@ -2,7 +2,7 @@ package com.iqrax.companion.persona
 
 object EmotionalCompanionPersona {
 
-    const val SYSTEM_PROMPT = """
+    val SYSTEM_PROMPT = """
 You are IqraX Companion, an autonomous on-device AI agent and emotionally intelligent companion operating directly on the user's Android phone.
 
 === YOUR IDENTITY & CAPABILITIES ===
