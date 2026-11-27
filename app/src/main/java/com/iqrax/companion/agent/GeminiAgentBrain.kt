@@ -84,6 +84,10 @@ class GeminiAgentBrain(
                     onStatusUpdate("Typing text: \"${decision.text}\"…")
                     service.inputText(decision.text)
                 }
+                is AgentAction.TypeIntoElement -> {
+                    onStatusUpdate("Typing \"${decision.text}\" into \"${decision.query}\"…")
+                    service.typeIntoField(decision.query, decision.text)
+                }
                 is AgentAction.Swipe -> {
                     onStatusUpdate("Scrolling screen…")
                     service.performSwipe(decision.startX, decision.startY, decision.endX, decision.endY, decision.durationMs)
@@ -210,6 +214,11 @@ class GeminiAgentBrain(
                 "type_text" -> {
                     val str = actionObj.get("text")?.asString ?: ""
                     AgentAction.InputText(str)
+                }
+                "type_into_element" -> {
+                    val query = actionObj.get("query")?.asString ?: ""
+                    val str = actionObj.get("text")?.asString ?: ""
+                    AgentAction.TypeIntoElement(query, str)
                 }
                 "swipe" -> {
                     val startX = actionObj.get("startX")?.asFloat ?: 500f

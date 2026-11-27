@@ -11,14 +11,20 @@ data class ScreenElement(
     val isClickable: Boolean,
     val isEditable: Boolean,
     val isScrollable: Boolean,
-    val isVisible: Boolean
+    val isVisible: Boolean,
+    val isPassword: Boolean = false,
+    val hintText: String? = null
 ) {
     val centerPoint: Pair<Float, Float>
         get() = Pair(bounds.exactCenterX(), bounds.exactCenterY())
 
     fun matchesText(query: String): Boolean {
-        return (text?.contains(query, ignoreCase = true) == true) ||
-                (contentDescription?.contains(query, ignoreCase = true) == true)
+        val q = query.trim()
+        if (q.isEmpty()) return false
+        return (text?.contains(q, ignoreCase = true) == true) ||
+                (contentDescription?.contains(q, ignoreCase = true) == true) ||
+                (hintText?.contains(q, ignoreCase = true) == true) ||
+                (id.contains(q, ignoreCase = true))
     }
 }
 
@@ -36,6 +42,7 @@ sealed class AgentAction {
     data class ClickCoordinate(val x: Float, val y: Float) : AgentAction()
     data class ClickElement(val query: String) : AgentAction()
     data class InputText(val text: String) : AgentAction()
+    data class TypeIntoElement(val query: String, val text: String) : AgentAction()
     data class Swipe(val startX: Float, val startY: Float, val endX: Float, val endY: Float, val durationMs: Long = 300) : AgentAction()
     data class PressSystemKey(val key: SystemKey) : AgentAction()
     data class LaunchApp(val packageName: String) : AgentAction()

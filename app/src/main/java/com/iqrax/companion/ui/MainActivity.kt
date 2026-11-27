@@ -121,10 +121,10 @@ class MainActivity : AppCompatActivity() {
 
         // 7. Quick Chips
         binding.chipMainWhatsApp.setOnClickListener {
-            executeTask("WhatsApp me Zaid ko message bhejo Salam")
+            executeTask("WhatsApp mein ja ke Zaid ko ye message karo Salam")
         }
         binding.chipMainInsta.setOnClickListener {
-            executeTask("Instagram open karo")
+            executeTask("Instagram pe ja ke is bande ko chat mein ye likh do Hello")
         }
         binding.chipMainScreen.setOnClickListener {
             executeTask("Screen par kya likha hai padho")

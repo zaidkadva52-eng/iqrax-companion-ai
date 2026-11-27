@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.iqrax.companion.R
 import com.iqrax.companion.operator.HumanPhoneOperator
-import java.util.Locale
 
 class VoiceCommandActivity : AppCompatActivity() {
 
@@ -29,6 +29,10 @@ class VoiceCommandActivity : AppCompatActivity() {
     private lateinit var tvTranscript: TextView
     private lateinit var etManual: EditText
     private lateinit var btnMic: ImageView
+    private lateinit var layoutCredentialsDrawer: LinearLayout
+    private lateinit var etLoginEmail: EditText
+    private lateinit var etLoginPassword: EditText
+    private lateinit var btnSubmitCredentials: Button
     private var isListening = false
 
     private val audioPermissionLauncher = registerForActivityResult(
@@ -50,6 +54,10 @@ class VoiceCommandActivity : AppCompatActivity() {
         tvTranscript = findViewById(R.id.tvTranscript)
         etManual = findViewById(R.id.etManualCommand)
         btnMic = findViewById(R.id.btnMicTrigger)
+        layoutCredentialsDrawer = findViewById(R.id.layoutCredentialsDrawer)
+        etLoginEmail = findViewById(R.id.etLoginEmail)
+        etLoginPassword = findViewById(R.id.etLoginPassword)
+        btnSubmitCredentials = findViewById(R.id.btnSubmitCredentials)
 
         setupButtons()
         checkPermissionAndListen()
@@ -76,11 +84,37 @@ class VoiceCommandActivity : AppCompatActivity() {
         }
 
         // Quick action chips
+        findViewById<View>(R.id.chipWhatsApp)?.setOnClickListener {
+            executeTask("WhatsApp mein ja ke Zaid ko ye message karo Salam")
+        }
+        findViewById<View>(R.id.chipInstagram)?.setOnClickListener {
+            executeTask("Instagram pe ja ke is bande ko chat mein ye likh do Hello")
+        }
+        findViewById<View>(R.id.chipAutoLogin)?.setOnClickListener {
+            layoutCredentialsDrawer.visibility = if (layoutCredentialsDrawer.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+        }
         findViewById<View>(R.id.chipYouTube)?.setOnClickListener { executeTask("Open YouTube") }
-        findViewById<View>(R.id.chipWhatsApp)?.setOnClickListener { executeTask("Open WhatsApp") }
+        findViewById<View>(R.id.chipScreenRead)?.setOnClickListener { executeTask("Screen par kya likha hai padho") }
         findViewById<View>(R.id.chipHome)?.setOnClickListener { executeTask("Home") }
-        findViewById<View>(R.id.chipScrollDown)?.setOnClickListener { executeTask("Scroll down") }
         findViewById<View>(R.id.chipBack)?.setOnClickListener { executeTask("Back") }
+
+        btnSubmitCredentials.setOnClickListener {
+            val email = etLoginEmail.text.toString().trim()
+            val pass = etLoginPassword.text.toString().trim()
+            if (email.isEmpty() || pass.isEmpty()) {
+                Toast.makeText(this, "Email aur Password dono enter karein", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            // Dismiss dialog immediately so active window is exposed to Accessibility Service
+            finish()
+            HumanPhoneOperator.executeDirectLogin(
+                email = email,
+                pass = pass,
+                context = applicationContext,
+                onStatus = {},
+                onFinish = {}
+            )
+        }
     }
 
     private fun checkPermissionAndListen() {
@@ -131,7 +165,7 @@ class VoiceCommandActivity : AppCompatActivity() {
                 if (!matches.isNullOrEmpty()) {
                     val spoken = matches[0]
                     tvTranscript.text = spoken
-                    executeTask(spoken)
+                    handleRecognizedText(spoken)
                 }
             }
             override fun onPartialResults(partialResults: Bundle?) {
@@ -166,9 +200,20 @@ class VoiceCommandActivity : AppCompatActivity() {
             if (!matches.isNullOrEmpty()) {
                 val spoken = matches[0]
                 tvTranscript.text = spoken
-                executeTask(spoken)
+                handleRecognizedText(spoken)
             }
         }
+    }
+
+    private fun handleRecognizedText(spoken: String) {
+        val low = spoken.lowercase()
+        // If user says "login kar do" without email/password, show the credentials drawer
+        if ((low.contains("login") || low.contains("log in")) && !low.contains("@") && !low.contains("password")) {
+            layoutCredentialsDrawer.visibility = View.VISIBLE
+            tvStatus.text = "Email aur Password enter karein"
+            return
+        }
+        executeTask(spoken)
     }
 
     private fun stopSpeechListening() {
@@ -180,6 +225,23 @@ class VoiceCommandActivity : AppCompatActivity() {
 
     private fun executeTask(command: String) {
         tvStatus.text = "Executing: $command"
+        val lower = command.lowercase()
+        val shouldDismissQuickly = lower.contains("whatsapp") ||
+                lower.contains("instagram") ||
+                lower.contains("insta") ||
+                lower.contains("youtube") ||
+                lower.contains("chrome") ||
+                lower.contains("home") ||
+                lower.contains("camera") ||
+                lower.contains("setting")
+
+        if (shouldDismissQuickly) {
+            // Dismiss activity so the target app becomes the active window for Accessibility
+            Handler(Looper.getMainLooper()).postDelayed({
+                finish()
+            }, 200)
+        }
+
         HumanPhoneOperator.execute(
             context = applicationContext,
             commandText = command,
@@ -187,9 +249,11 @@ class VoiceCommandActivity : AppCompatActivity() {
                 runOnUiThread { tvStatus.text = status }
             },
             onFinish = {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    finish()
-                }, 800)
+                if (!shouldDismissQuickly) {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        finish()
+                    }, 1200)
+                }
             }
         )
     }

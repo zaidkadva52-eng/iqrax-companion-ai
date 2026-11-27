@@ -42,9 +42,20 @@ jobs:
       uses: softprops/action-gh-release@v2
       if: github.ref == 'refs/heads/main'
       with:
-        tag_name: v1.0.0
-        name: "IqraX Companion AI v1.0.0"
-        body: "Download the APK file below and install it directly on your Android phone!"
+        tag_name: v1.1.0
+        name: "IqraX Companion AI v1.1.0 - Full Human Phone Operator"
+        body: |
+          ### IqraX Companion AI v1.1.0 - Autonomous Human Phone Operator
+          
+          **Key Capabilities:**
+          - 💬 **WhatsApp Automation**: Send messages to any contact with automatic search, chat selection, and send.
+          - 📸 **Instagram Automation**: Automatic DM navigation, user search, compose, and send.
+          - 🔐 **Autonomous Email & Password Login**: Automatic detection of email and password fields, credential typing, and form submission.
+          - ⚡ **Multi-Command Decomposition**: Compound instruction chains executed step-by-step with real-time Hindi/Hinglish voice feedback.
+          - 🖐️ **Accessibility Touch & Typing**: Coordinate gesture tapping, field-specific typing, and clipboard paste fallback.
+          
+          Download `app-debug.apk` below and install it directly on your Android phone!
         files: app/build/outputs/apk/debug/app-debug.apk
+        prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

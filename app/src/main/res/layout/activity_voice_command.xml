@@ -43,7 +43,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="IqraX Companion AI"
+                    android:text="IqraX Autonomous Companion"
                     android:textColor="@color/white"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -52,7 +52,7 @@
                     android:id="@+id/tvVoiceSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Voice &amp; Autonomous Assistant"
+                    android:text="Human Phone Operator v5.1"
                     android:textColor="@color/blaze_orange"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:gravity="center"
-                android:hint="Try saying: 'Open YouTube', 'WhatsApp kholo', or 'Home screen'"
+                android:hint="Try saying: 'WhatsApp me Zaid ko message karo', 'Instagram pe message likho', or 'Login kar do'"
                 android:textColor="@color/linen_cream"
                 android:textColorHint="@color/slate_400"
                 android:textSize="13sp" />
@@ -129,9 +129,45 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/chipWhatsApp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_chip"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:text="💬 WhatsApp"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/chipInstagram"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_chip"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:text="📸 Instagram"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/chipAutoLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_chip"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:text="🔐 Auto-Login"
+                    android:textColor="@color/blaze_orange"
+                    android:textSize="12sp" />
+
+                <TextView
                     android:id="@+id/chipYouTube"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:background="@drawable/bg_chip"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
@@ -140,14 +176,14 @@
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/chipWhatsApp"
+                    android:id="@+id/chipScreenRead"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/bg_chip"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
-                    android:text="💬 WhatsApp"
+                    android:text="📄 Screen Read"
                     android:textColor="@color/white"
                     android:textSize="12sp" />
 
@@ -164,18 +200,6 @@
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/chipScrollDown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_chip"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
-                    android:text="⬇️ Scroll Down"
-                    android:textColor="@color/white"
-                    android:textSize="12sp" />
-
-                <TextView
                     android:id="@+id/chipBack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -188,6 +212,64 @@
                     android:textSize="12sp" />
             </LinearLayout>
         </HorizontalScrollView>
+
+        <!-- Credentials Drawer (Shown for Auto-Login) -->
+        <LinearLayout
+            android:id="@+id/layoutCredentialsDrawer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_card_active"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Auto-Fill Credentials on Screen"
+                android:textColor="@color/blaze_orange"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etLoginEmail"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_box"
+                android:hint="Email / Username"
+                android:inputType="textEmailAddress"
+                android:paddingHorizontal="10dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/slate_400"
+                android:textSize="13sp" />
+
+            <EditText
+                android:id="@+id/etLoginPassword"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_box"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:paddingHorizontal="10dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/slate_400"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/btnSubmitCredentials"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_button_gradient"
+                android:text="Autofill &amp; Submit Login"
+                android:textAllCaps="false"
+                android:textColor="@color/vampire_black"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <!-- Fallback Text Input & Send -->
         <LinearLayout
